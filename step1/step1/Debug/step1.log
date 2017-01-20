@@ -1,0 +1,2 @@
+﻿  oop2.cpp
+c:\users\gnoy\documents\visual studio 2015\projects\oop\step1\step1\oop2.cpp(100): error C3867: 'Account::showMenu': 비표준 구문입니다. '&'를 사용하여 멤버 포인터를 만드세요.
