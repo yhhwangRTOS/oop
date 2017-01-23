@@ -1,36 +1,96 @@
 #include <iostream>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
-using namespace std;
+#pragma warning(disable:4996)
 
-class Account {
+using namespace std;
+const int NAME_LEN = 20;
+
+void ShowMenu(void);
+void MakeAccount(void);
+void DepositMoney(void);
+void WithdrawMoney(void);
+void ShowAllAccInfo(void);
+
+enum {MAKE = 1, DEPOSIT, WITHDRAW, INQUIRE, EXIT};
+
+class Account
+{
 private:
-	int id;
-	char* name = new char;
+	int accID;
 	int balance;
-	
+	char* cusName;
+
 public:
-	Account() 
+	Account(int ID, int money, char* name)
+		: accID(ID), balance(money)				//member value initializer
 	{
-		this->id = 0;
-		//this->name = NULL;
-		this->balance = 0;
+		cusName = new char[strlen(name) + 1];	//길이만큼 배열 선언, +1은 널문자 공간
+		//strcpy(cusName, name);					//질문..여기서 strcpy
+		strcpy_s(cusName, sizeof(cusName), name);
 	}
-	void showMenu(void);
-	void openAccount(void);
-	void inputMoney(void);
-	void getMoney(void);
-	void getAccountAll(void);
+	int GetAccID()
+	{
+		return accID;
+	}
+	void Deposit(int money)
+	{
+		balance += money;
+	}
+	int Withdraw(int money)
+	{
+		if (balance < money) {
+			return 0;
+		}
+		balance -= money;
+		return money;						//왜 money를 return?
+	}
+	void ShowAccInfo(void)
+	{
+		cout << "계좌ID: " << accID << endl;
+		cout << "이름: " << cusName << endl;
+		cout << "잔액" << balance << endl;
+	}
+	~Account()
+	{
+		delete []cusName;
+	}
 };
 
-Account* account = new Account[100];
-int index = 0;
+Account* accArr[100];
+int accNum = 0;
 
-enum {MAKE=1, DEPOSIT, WITHDRAW, INQUIRE, EXIT};
+int main(void)
+{
+	int choice;
 
-void Account::showMenu(void)
+	while (1) {
+		ShowMenu();
+		cin >> choice;
+		switch (choice)
+		{
+		case MAKE:
+			MakeAccount();
+			break;
+		case DEPOSIT:
+			DepositMoney();
+			break;
+		case WITHDRAW:
+			WithdrawMoney();
+			break;
+		case INQUIRE:
+			ShowAllAccInfo();
+			break;
+		case EXIT:
+			return 0;
+			break;
+		default:
+			break;
+		}
+	}
+	return 0;
+}
+void ShowMenu(void)
 {
 	cout << "------Menu------" << endl;
 	cout << "1. 계좌개설" << endl;
@@ -40,83 +100,69 @@ void Account::showMenu(void)
 	cout << "5. 프로그램 종료" << endl;
 	cout << "선택: ";
 }
-void Account::openAccount(void)
+void MakeAccount(void)
 {
+	int id;
+	char name[NAME_LEN];
+	int balance;
+
 	cout << "[계좌개설]" << endl;
 	cout << "계좌ID: ";
-	cin >> account[index].id;
+	cin >> id;
 	cout << "이름: ";
-	cin >> account[index].name;
+	cin >> name;
 	cout << "입금액: ";
-	cin >> account[index].balance;
+	cin >> balance;
+	cout << endl;
+
+	accArr[accNum++] = new Account(id, balance, name);
 }
-void Account::inputMoney(void)
-{/*
-	int id, money, cnt;
-	cnt = cusNum;
+void DepositMoney(void)
+{
+	int id;
+	int balance;
+	
 	cout << "[입금]" << endl;
 	cout << "계좌ID: ";
 	cin >> id;
 	cout << "입금액: ";
-	cin >> money;
-	for (int i = 0; i < cnt; i++) {
-		if (cusAcc[i].ID == id)
-			cusAcc[i].balance += money;
+	cin >> balance;
+
+	for (int i = 0; i < accNum; i++) {
+		if (accArr[i]->GetAccID() == id)
+			accArr[i]->Deposit(balance);
+		cout << "입금완료" << endl << endl;
+		return;
 	}
-	cout << "입금완료" << endl;
-	*/
+	cout << "유효하지 않은 id" << endl;
 }
-void Account::getMoney(void)
-{/*
-	int id, money, cnt;
-	cnt = cusNum;
+void WithdrawMoney(void)
+{
+	int id;
+	int balance;
+
 	cout << "[출금]" << endl;
 	cout << "계좌ID: ";
 	cin >> id;
 	cout << "출금액: ";
-	cin >> money;
-	for (int i = 0; i < cnt; i++) {
-		if (cusAcc[i].ID == id)
-			cusAcc[i].balance -= money;
-	}
-	cout << "출금완료" << endl;
-	*/
-}
-void Account::getAccountAll(void)
-{/*
-	int cnt = cusNum;
-	for (int i = 0; i < cnt; i++) {
-		cout << "계좌ID: " << cusAcc[i].ID << endl;
-		cout << "이름: " << cusAcc[i].cusName << endl;
-		cout << "잔액" << cusAcc[i].balance << endl;
-	}
-	*/
-}
-int main(void)
-{
-	int choice = 0;
-
-	while (1) {
-		account[index].showMenu;
-		cin >> choice;
-		switch (choice) {
-		case MAKE:
-			account[index].openAccount();
-			break;
-		case DEPOSIT:
-			account[index].inputMoney();
-			break;
-		case WITHDRAW:
-			account[index].getMoney();
-			break;
-		case INQUIRE:
-			account[index].getAccountAll();
-			break;
-		case EXIT:
-			return 0;
-		default:
-			break;
+	cin >> balance;
+	for (int i = 0; i < accNum; i++) {
+		if (accArr[i]->GetAccID() == id) {
+			if (accArr[i]->Withdraw(balance) == 0) {
+				cout << "잔액부족" << endl;
+				return;
+			}
+			cout << "출금 완료" << endl;
+			return;
 		}
+		cout << "입금완료" << endl << endl;
+		return;
 	}
-	return 0;
+	cout << "유효하지 않은 id" << endl;
+}
+void ShowAllAccInfo(void)
+{
+	for (int i = 0; i < accNum; i++) {
+		accArr[i]->ShowAccInfo();
+	}
 }
