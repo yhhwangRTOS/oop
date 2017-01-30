@@ -30,6 +30,9 @@
     <ClCompile Include="oop5.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="oop6_try.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="oop6.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

@@ -1,3 +1,5 @@
-﻿  oop5.cpp
+﻿  oop6.cpp
+c:\users\gnoy\desktop\project\study\oop\step1\step1\oop6.cpp(76): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\gnoy\desktop\project\study\oop\step1\step1\oop6.cpp(90): warning C4244: '인수': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   step1.vcxproj -> C:\Users\Gnoy\Desktop\project\study\oop\step1\Debug\step1.exe
   step1.vcxproj -> C:\Users\Gnoy\Desktop\project\study\oop\step1\Debug\step1.pdb (Full PDB)
